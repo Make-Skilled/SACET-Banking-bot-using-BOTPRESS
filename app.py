@@ -1,5 +1,7 @@
 from flask import Flask, render_template,request,session,redirect,url_for
 from pymongo import MongoClient
+import time
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key="banking_app"
@@ -12,6 +14,7 @@ DB_NAME = "banking"
 client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 users=db['users']
+transactions=db['transactions']
 
 @app.route('/')
 def index():    
@@ -19,7 +22,11 @@ def index():
 
 @app.route("/sendmoney")
 def returnmoney():
-    return render_template('send.html')
+    customer_id=session['customerid']
+    if not customer_id:
+        return render_template('login.html')
+    user=users.find_one({"customerid": customer_id})
+    return render_template('send.html',balance=user.get('balance'))
 
 @app.route("/admindashboard")
 def admindashboard():
@@ -50,7 +57,8 @@ def loginuser():
         user=users.find_one({"customerid": customer_id})
 
         if user and user.get("password") == password:
-            return render_template('dashboard.html', balance=user.get("balance"))
+            session['customerid']=customer_id
+            return redirect('/dashboard')
         else:
             return render_template('login.html', error="Invalid Customer ID or Password.")
 
@@ -131,12 +139,41 @@ def transfer():
 
     if from_user.get("balance", 0) < amount:
         return render_template('send.html', error="Insufficient balance.")
+    
+    
 
     # Perform the transfer
     collection.update_one({"customerid": from_customer_id}, {"$inc": {"balance": -amount}})
     collection.update_one({"customerid": to_customer_id}, {"$inc": {"balance": amount}})
+    
+    user=collection.find_one({"customerid": from_customer_id})
+    current_time = time.time()
+    readable_time = datetime.fromtimestamp(current_time).strftime('%Y-%m-%d %H:%M:%S')
+    
+    record={
+    "sent_from":from_customer_id,
+    "sent_to":to_customer_id,
+    "time":readable_time,
+    "amount":amount,
+    "balance":user.get('balance'),
+    "type":"debited",
+    }
+    record1={
+    "sent_from":to_customer_id,
+    "sent_to":from_customer_id,
+    "time":readable_time,
+    "amount":amount,
+    "balance":user.get('balance'),
+    "type":"credited",
+    }
+    transactions.insert_one(record)
+    transactions.insert_one(record1)
+    return render_template('send.html', success="Transfer completed successfully.",balance=user.get('balance'))
 
-    return render_template('send.html', success="Transfer completed successfully.")
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug=True)

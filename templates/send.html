@@ -76,7 +76,7 @@
       <li onclick="makeChange(); return false;" id="log">Log out</li>
     </ul>
 
-    <h3>&#8377;: <span id="bal">*****</span></h3>
+    <h3>&#8377; : <span id="bal">{{balance}}</span></h3>
 
     <div class="form4 top">
       <div class="container">
@@ -87,10 +87,10 @@
                 {% if error %}
                 <p style="color: red">{{ error }}</p>
                 {% endif %}
-                {% if message %}
+                {% if success %}
                 <p style="color: green">{{ message }}</p>
                 {% endif %}
-              <form class="form">
+              <form class="form" action="/transfer" method="post">
                 <div class="form-group">
                   <label class="sr-only">Customer ID</label>
                   <input
