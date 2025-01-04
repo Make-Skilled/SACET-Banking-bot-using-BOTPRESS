@@ -106,7 +106,7 @@
   <ul>
     <img src="static/images/logo.png">
     <li></li>
-    <li onclick="makeChange(); return false;" id="log">Log out</li>
+    <a href="/logout"><li id="log">Log out</li></a>
   </ul>
   <div class="content">
     <a href="/register">
@@ -114,7 +114,7 @@
     </a>
     <br>
     <br>
-    <a href="/register">
+    <a href="/deposit">
       <button>Deposit Money</button>
     </a>
     <br>
@@ -127,7 +127,9 @@
     <a href="recenttransactions.html">
       <button>Transfer Money</button>
     </a> <br/> <br/>
-    <button type="submit" class="btn-checkBalance">Check Balance </button> <br/><Br/>
+    <a href="/checkbalance">
+        <button>Check balance</button>
+      </a><br><br>
     <a href="chatbot.html">
       <button>Manage Users</button>
     </a>

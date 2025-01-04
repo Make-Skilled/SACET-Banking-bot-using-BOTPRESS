@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <!-- Add Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('static/images/bg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .content {
+            text-align: center;
+            padding-bottom: 40%;
+        }
+
+        .content:before {
+            content: '';
+            height: 100%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        button {
+            width: 500px;
+            background: #1AAB8A;
+            color: #fff;
+            border: none;
+            position: relative;
+            height: 60px;
+            font-size: 1.6em;
+            padding: 0 2em;
+            cursor: pointer;
+            transition: 800ms ease all;
+            outline: none;
+        }
+
+        button:hover {
+            background: #fff;
+            color: #1AAB8A;
+        }
+
+        button:before,
+        button:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 2px;
+            width: 0;
+            background: #1AAB8A;
+            transition: 400ms ease all;
+        }
+
+        button:after {
+            right: inherit;
+            top: inherit;
+            left: 0;
+            bottom: 0;
+        }
+
+        button:hover:before,
+        button:hover:after {
+            width: 100%;
+            transition: 800ms ease all;
+        }
+
+        img {
+            width: 200px;
+            opacity: 0.9;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        li {
+            float: right;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+
+        #log {
+            cursor: pointer;
+        }
+
+        h3 {
+            padding-left: 87%;
+            font-size: 40px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <img src="static/images/logo.png">
+        <li></li>
+        <a href="/logout"><li id="log">Log out</li></a>
+    </ul>
+
+    <h3>&#8377; : <span id="bal">{{ balance }}</span></h3>
+
+    <div class="container mt-4">
+        <h2 class="text-center">Transaction Records</h2>
+
+        <!-- Display success or error message if provided -->
+        {% if success %}
+            <div class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
+        {% endif %}
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Display the transactions in a table -->
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Sender</th>
+                    <th>Recipient</th>
+                    <th>Time</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.sent_from }}</td>
+                        <td>{{ transaction.sent_to }}</td>
+                        <td>{{ transaction.time }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.balance }}</td>
+                        <td>{{ transaction.type }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Bootstrap JS and dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ from flask import Flask, render_template,request,session,redirect,url_for
 from pymongo import MongoClient
 import time
 from datetime import datetime
+from bson import ObjectId
 
 app = Flask(__name__)
 app.secret_key="banking_app"
@@ -169,6 +170,89 @@ def transfer():
     transactions.insert_one(record)
     transactions.insert_one(record1)
     return render_template('send.html', success="Transfer completed successfully.",balance=user.get('balance'))
+
+@app.route('/deposit', methods=['GET'])
+def deposit_form():
+    return render_template('deposit.html')
+
+# Route for handling form submission
+@app.route('/deposit', methods=['POST'])
+def deposit():
+    # Get form data using request.form.get
+    to_customer_id = request.form.get('to')
+    amount = request.form.get('amount')
+    
+    # Perform any logic here (e.g., validate inputs, check user, etc.)
+    if to_customer_id and amount :
+        try:
+            # Convert amount to float and ensure it's a valid number
+            deposit_amount = float(amount)
+            if deposit_amount <= 0:
+                return render_template('deposit.html', error='Amount must be positive.')
+
+            # Find the user by the provided `to_customer_id` (customer ID)
+            user = users.find_one({'customerid': to_customer_id})
+
+            if user:
+                # Increment the user's balance by the deposit amount
+                users.update_one(
+                    {'customerid': to_customer_id},
+                    {'$inc': {'balance': deposit_amount}}
+                )
+                
+                # Record the transaction in a 'transactions' collection
+                current_time = time.time()
+                readable_time = datetime.fromtimestamp(current_time).strftime('%Y-%m-%d %H:%M:%S')
+                user = users.find_one({'customerid': to_customer_id})
+                record = {
+                    "sent_from":to_customer_id,
+                    "sent_to":"-",
+                    "time": readable_time,
+                    "amount": deposit_amount,
+                    "balance": user.get('balance') ,  # New balance after deposit
+                    "type": "deposited",  # Assuming the action is a credit (deposit)
+                }
+                print("hello")
+                # Insert the transaction record
+                transactions.insert_one(record)
+                
+                # Redirect to a success page or deposit page
+                return render_template('deposit.html', success='Deposit successful.')
+            else:
+                return render_template('deposit_form', error='Recipient user not found.')
+
+        except ValueError:
+            return redirect(url_for('deposit_form', error='Invalid amount.'))
+        except Exception as e:
+            return redirect(url_for('deposit_form', error=str(e)))
+    else:
+        # Handle missing or invalid form data
+        return render_template('deposit.html', error='Invalid input')
+
+@app.route("/checkbalance")
+def checkbalance():
+    return render_template('checkbalance.html')
+
+@app.route("/checkbalance",methods=['post'])
+def checkbal():
+    id=request.form.get('to')
+    user=users.find_one({"customerid":id})
+    if not user:
+        return render_template('checkbalance.html',error="User does not exist")
+    return render_template("checkbalance.html",balance=user.get('balance'))
+
+@app.route('/transactions', methods=['GET'])
+def transactions1():
+    print(session['customerid'])
+    # Fetch the list of transaction records from the MongoDB collection
+    user_transactions = transactions.find({"sent_from":session['customerid']})
+
+    # Convert the cursor to a list and send it to the template
+    transaction_list = list(user_transactions)
+
+    # Pass the transaction list to the HTML template
+    return render_template('transactions.html', transactions=transaction_list)
+
 
 @app.route("/logout")
 def logout():
