@@ -140,7 +140,8 @@ form:after {
 #content form { margin: 0 20px; position: relative }
 #content form .form-select,
 #content form input[type="text"],
-#content form input[type="password"] {
+#content form input[type="password"],
+#content form input[type="email"] {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	-ms-border-radius: 3px;

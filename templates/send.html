@@ -72,11 +72,9 @@
           Check Balance
         </button>
       </li>
-      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/admindashboard">Dashboard</a></li>
       <li onclick="makeChange(); return false;" id="log">Log out</li>
     </ul>
-
-    <h3>&#8377; : <span id="bal">{{balance}}</span></h3>
 
     <div class="form4 top">
       <div class="container">
@@ -85,21 +83,32 @@
             <div class="form-bg">
                 <h1>Transfer</h1>
                 {% if error %}
-                <p style="color: red">{{ error }}</p>
+                <center><p style="color: red">{{ error }}</p></center>
                 {% endif %}
                 {% if success %}
-                <p style="color: green">{{ message }}</p>
+                <center><p style="color: green">{{ message }}</p></center>
                 {% endif %}
               <form class="form" action="/transfer" method="post">
                 <div class="form-group">
-                  <label class="sr-only">Customer ID</label>
+                    <label class="sr-only">From ID</label>
+                    <input
+                      type="value"
+                      class="form-control"
+                      required=""
+                      name='from'
+                      id="to"
+                      placeholder="From ID"
+                    />
+                  </div>
+                <div class="form-group">
+                  <label class="sr-only">To ID</label>
                   <input
                     type="value"
                     class="form-control"
                     required=""
                     name='to'
                     id="to"
-                    placeholder="Customer ID"
+                    placeholder="To ID"
                   />
                 </div>
                 <div class="form-group">

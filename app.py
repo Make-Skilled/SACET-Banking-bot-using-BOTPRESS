@@ -1,11 +1,43 @@
 from flask import Flask, render_template,request,session,redirect,url_for
 from pymongo import MongoClient
 import time
+from flask_cors import CORS
 from datetime import datetime
-from bson import ObjectId
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 app.secret_key="banking_app"
+CORS(app)
+
+def generate_customer_id():
+    """Generate a unique 12-digit customer ID not starting with 0."""
+    return random.randint(100000000000, 999999999999)
+
+def send_email(recipient, subject, body):
+    """Send an email using SMTP."""
+    try:
+        smtp_server = "smtp.gmail.com"
+        smtp_port = 587
+        sender_email = "kr4785543@gmail.com"
+        sender_password = "lkrmqtcolyshijmf"
+
+        # Set up the message
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = recipient
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Send the email
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.send_message(msg)
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 
 # MongoDB Configuration
 MONGO_URI = "mongodb+srv://krishnareddy:1234567890@diploma.1v5g6.mongodb.net/"
@@ -74,47 +106,68 @@ def registeruser():
         mobile = request.form.get('mobile')
         address = request.form.get('address')
         account_type = request.form.get('accountType')
-        customer_id = request.form.get('customerId')
+        email = request.form.get('email')
         password = request.form.get('password')
 
-        # Validate Aadhaar and Customer ID
+        # Validate Aadhaar number
         if len(aadhaar) != 12 or not aadhaar.isdigit():
             return render_template('register.html', error="Aadhaar number must be 12 digits.")
-        if len(customer_id) != 12 or not customer_id.isdigit():
-            return render_template('register.html', error="Customer ID must be 12 digits.")
 
-        # Insert user into MongoDB
+        # Validate email, Aadhaar, and mobile for uniqueness
         collection = db["users"]
-        if collection.find_one({"customerid": customer_id}):
-            return render_template('register.html', error="Customer ID already exists.")
+        if collection.find_one({"email": email}):
+            return render_template('register.html', error="Email already exists.")
         if collection.find_one({"aadhaar": aadhaar}):
             return render_template('register.html', error="Aadhaar number already exists.")
         if collection.find_one({"mobile": mobile}):
             return render_template('register.html', error="Mobile number already exists.")
 
+        # Generate a unique 12-digit customer ID
+        customer_id = generate_customer_id()
+        while collection.find_one({"customerid": str(customer_id)}):
+            customer_id = generate_customer_id()
+
+        # Insert user into MongoDB
         collection.insert_one({
             "cname": cname,
             "aadhaar": aadhaar,
             "mobile": mobile,
             "address": address,
             "accountType": account_type,
-            "customerid": customer_id,
+            "customerid": str(customer_id),
+            "email": email,
             "password": password,
-            "balance":1000
+            "balance": 1000
         })
-        session['userType']='customer'
-        session['customerid']=customer_id
 
-        return render_template('admindashboard.html',message="User registration successful")
+        # Set session details for the user
+        session['userType'] = 'customer'
+        session['customerid'] = str(customer_id)
+
+        # Send success email to the user
+        email_body = f"""
+        Dear {cname},
+
+        Congratulations! Your bank account has been successfully created.
+
+        Your Customer ID: {customer_id}
+
+        Please keep this Customer ID safe as it will be required for future transactions.
+
+        Regards,
+        Your Bank Team
+        """
+        send_email(email, "Bank Account Registration Successful", email_body)
+
+        # Return success message
+        return render_template('admindashboard.html', message="User registration successful. Email sent with Customer ID.")
 
     return render_template('register.html')
 
 @app.route('/transfer', methods=['POST'])
 def transfer():
-    if 'customerid' not in session:
-        return render_template('login.html', error="User not logged in.")
 
-    from_customer_id = session['customerid']
+    from_customer_id = request.form.get('from')
     to_customer_id = request.form.get('to')
     amount = request.form.get('amount')
 
@@ -234,12 +287,27 @@ def checkbalance():
     return render_template('checkbalance.html')
 
 @app.route("/checkbalance",methods=['post'])
-def checkbal():
+def checkbala():
     id=request.form.get('to')
     user=users.find_one({"customerid":id})
     if not user:
         return render_template('checkbalance.html',error="User does not exist")
     return render_template("checkbalance.html",balance=user.get('balance'))
+
+from flask import Flask, jsonify, request
+
+@app.route("/checkbal", methods=['POST'])
+def checkbal():
+    id = request.args.get('id')
+    
+    # Find the user in the MongoDB collection
+    user = users.find_one({"customerid": id})
+    
+    if not user:
+        return jsonify({"error": "User does not exist"}), 404  # Return a 404 error if user doesn't exist
+    
+    # Return the user's balance as a JSON response
+    return jsonify({"customerid": id, "balance": user.get('balance')}), 200
 
 @app.route('/transactions', methods=['GET'])
 def transactions1():
