@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support - DappWallet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-900 to-blue-700 min-h-screen">
+    <nav class="bg-white/10 backdrop-blur-md shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <img class="h-12 w-auto" src="static/images/logo.png" alt="Logo">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{{ '/dashboard' if session.get('customerid') else '/admindashboard' }}" class="text-white hover:text-blue-200">Dashboard</a>
+                    <a href="/logout" class="text-white hover:text-red-200">Log out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden">
+            <div class="px-6 py-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-8">Help & Support</h2>
+
+                <!-- FAQs Section -->
+                <div class="mb-12">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Frequently Asked Questions</h3>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-gray-900 mb-2">How do I create a new account?</h4>
+                            <p class="text-gray-600">To create a new account, click on the "Register" button on the homepage. Fill in your personal details, including your name, Aadhaar number, mobile number, and email address. Once submitted, you'll receive your customer ID via email.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-gray-900 mb-2">How can I check my account balance?</h4>
+                            <p class="text-gray-600">You can check your balance by logging into your account and viewing it on the dashboard. Your balance is also displayed after each transaction.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-gray-900 mb-2">How do I transfer money?</h4>
+                            <p class="text-gray-600">To transfer money, go to the "Send Money" section from your dashboard. Enter the recipient's customer ID and the amount you wish to transfer. Verify the details and confirm the transaction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Support Section -->
+                <div class="border-t border-gray-200 pt-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Contact Support</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-blue-900 mb-2">Email Support</h4>
+                            <p class="text-blue-700 mb-4">For general inquiries and support:</p>
+                            <a href="mailto:support@dappwallet.com" class="text-blue-600 hover:text-blue-800">support@dappwallet.com</a>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-green-900 mb-2">Phone Support</h4>
+                            <p class="text-green-700 mb-4">Available Monday to Friday, 9 AM to 6 PM:</p>
+                            <a href="tel:+1800123456789" class="text-green-600 hover:text-green-800">1800-123-456-789</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Support -->
+                <div class="mt-8 bg-red-50 p-6 rounded-lg">
+                    <h4 class="text-lg font-medium text-red-900 mb-2">Emergency Support</h4>
+                    <p class="text-red-700 mb-4">For urgent issues or account security concerns:</p>
+                    <div class="flex items-center space-x-4">
+                        <a href="tel:+1800999999999" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Emergency Hotline</a>
+                        <span class="text-red-600">1800-999-999-999 (24/7)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

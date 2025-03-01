@@ -1,135 +1,75 @@
 <!DOCTYPE html>
 <html>
-<title>Dashboard</title>
-
 <head>
+  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-<body>
-  <style>
-    body {
-      background: url('static/images/bg.png');
-    }
+<body class="bg-gradient-to-r from-blue-900 to-blue-700 min-h-screen">
+  <nav class="bg-white/10 backdrop-blur-md shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0">
+          <img class="h-12 w-auto" src="static/images/logo.png" alt="Logo">
+        </div>
+        <div class="flex items-center">
+          <span class="text-white mr-4">Welcome, Customer</span>
+          <a href="/logout" 
+             class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+            Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-    .content {
-      text-align: center;
-      padding-bottom: 40%;
-    }
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <!-- Send Money Card -->
+      <div class="bg-white overflow-hidden shadow-xl rounded-lg">
+        <a href="/sendmoney" class="block hover:bg-gray-50 transition-colors duration-200">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Send Money</h3>
+                <p class="mt-1 text-sm text-gray-500">Transfer funds to another account</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
 
-    .content:before {
-      content: '';
-      height: 100%;
-      display: inline-block;
-      vertical-align: middle;
-    }
+      <!-- Recent Transactions Card -->
+      <div class="bg-white overflow-hidden shadow-xl rounded-lg">
+        <a href="/transactions" class="block hover:bg-gray-50 transition-colors duration-200">
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Recent Transactions</h3>
+                <p class="mt-1 text-sm text-gray-500">View your transaction history</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
 
-    button {
-      width: 500px;
-      background: #1AAB8A;
-      color: #fff;
-      border: none;
-      position: relative;
-      height: 60px;
-      font-size: 1.6em;
-      padding: 0 2em;
-      cursor: pointer;
-      transition: 800ms ease all;
-      outline: none;
-    }
-
-    button:hover {
-
-      background: #fff;
-      color: #1AAB8A;
-    }
-
-    button:before,
-    button:after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      height: 2px;
-      width: 0;
-      background: #1AAB8A;
-      transition: 400ms ease all;
-    }
-
-    button:after {
-      right: inherit;
-      top: inherit;
-      left: 0;
-      bottom: 0;
-    }
-
-    button:hover:before,
-    button:hover:after {
-      width: 100%;
-      transition: 800ms ease all;
-    }
-
-    img {
-      width: 200px;
-      opacity: 0.9;
-    }
-
-    ul {
-      list-style-type: none;
-      ba margin: 0;
-      padding: 0;
-      overflow: hidden;
-
-    }
-
-    li {
-      float: right;
-      display: block;
-      color: white;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-    }
-
-    .active {
-      background-color: #4CAF50;
-    }
-
-    #log {
-      cursor: pointer;
-    }
-
-    h3 {
-      padding-left: 87%;
-      font-size: 40px;
-      color: white;
-    }
-  </style>
-  <ul>
-    <img src="static/images/logo.png">
-    <li></li>
-    <a href="/logout"><li id="log">Log out</li></a>
-  </ul>
-
-  <div class="content">
-    <a href="/sendmoney">
-      <button>Send Money</button>
-    </a>
-    <br>
-    <br>
-    <a href="/transactions">
-      <button>Recent Transactions</button>
-    </a> <br/> <br/>
-    <button type="submit" class="btn-checkBalance">Check Balance </button> <br/><Br/>
-    <a href="chatbot.html">
-      <button>Chatbot | Help </button>
-    </a>
+    </div>
   </div>
-  
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2025/01/11/03/20250111033842-18A0SOUI.js"></script>
-      
 </body>
-
-
 </html>

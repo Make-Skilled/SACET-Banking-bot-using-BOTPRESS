@@ -1,107 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Sign Up</title>
-    <link rel="stylesheet" type="text/css" href="static/css/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-  <body>
-    <br />
+<body class="bg-gradient-to-r from-blue-900 to-blue-700 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md mx-auto">
+    <div class="bg-white shadow-xl rounded-lg p-8">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Register Now</h1>
+        {% if error %}
+        <p class="mt-2 text-sm text-red-600">{{ error }}</p>
+        {% endif %}
+        {% if message %}
+        <p class="mt-2 text-sm text-green-600">{{ message }}</p>
+        {% endif %}
+      </div>
 
-    <div class="container">
-      <section id="content">
-        <form onSubmit="/register" method="post">
-          <h1>Register Now</h1>
-          {% if error %}
-          <p style="color: red">{{ error }}</p>
-          {% endif %}
-          {% if message %}
-          <p style="color: green">{{ message }}</p>
-          {% endif %}
-          <div>
-            <input
-              type="text"
-              placeholder="Customer name"
-              required=""
-              name="cname"
-              id="cname"
-            />
-          </div>
+      <form class="space-y-6" action="/register" method="post">
+        <div>
+          <label for="cname" class="block text-sm font-medium text-gray-700">Customer Name</label>
+          <input type="text"
+                 id="cname"
+                 name="cname"
+                 required
+                 placeholder="Enter your full name"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
 
-          <div>
-            <input
-              type="text"
-              placeholder="Aadhaar No"
-              required=""
-              name="aadhaar"
-              id="aadhaar"
-            />
-          </div>
+        <div>
+          <label for="aadhaar" class="block text-sm font-medium text-gray-700">Aadhaar Number</label>
+          <input type="text"
+                 id="aadhaar"
+                 name="aadhaar"
+                 required
+                 placeholder="Enter 12-digit Aadhaar number"
+                 pattern="[0-9]{12}"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
 
-          <div>
-            <input
-              type="text"
-              placeholder="Mobile No"
-              required=""
-              name="mobile"
-              id="aadhaar"
-            />
-          </div>
+        <div>
+          <label for="mobile" class="block text-sm font-medium text-gray-700">Mobile Number</label>
+          <input type="tel"
+                 id="mobile"
+                 name="mobile"
+                 required
+                 placeholder="Enter 10-digit mobile number"
+                 pattern="[0-9]{10}"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
 
-          <div>
-            <input
-              type="text"
-              placeholder="Address"
-              required=""
-              name="address"
-              id="homeaddress"
-            />
-          </div>
+        <div>
+          <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+          <textarea id="address"
+                    name="address"
+                    required
+                    placeholder="Enter your full address"
+                    rows="3"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+        </div>
 
-          <div>
-            <select class="form-select" id="accountType" name="accountType">
-              <option selected>Select Account Type</option>
-              <option value="Savings Account">Savings Account</option>
-              <option value="Current Account">Current Account</option>
-              <option value="DEMAT Account">DEMAT Account</option>
-            </select>
-          </div>
+        <div>
+          <label for="accountType" class="block text-sm font-medium text-gray-700">Account Type</label>
+          <select id="accountType"
+                  name="accountType"
+                  required
+                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <option value="" disabled selected>Select Account Type</option>
+            <option value="Savings Account">Savings Account</option>
+            <option value="Current Account">Current Account</option>
+            <option value="DEMAT Account">DEMAT Account</option>
+          </select>
+        </div>
 
-          <div>
-            <input
-              type="text"
-              placeholder="Enter Customer Email"
-              required=""
-              name="email"
-              id="username"
-            />
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email"
+                 id="email"
+                 name="email"
+                 required
+                 placeholder="Enter your email address"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password"
+                 id="password"
+                 name="password"
+                 required
+                 placeholder="Create a strong password"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+        </div>
+
+        <div class="flex flex-col space-y-4">
+          <button type="submit"
+                  class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Register
+          </button>
+          <div class="text-center">
+            <a href="/login" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+              Already have an account? Log In
+            </a>
           </div>
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              required=""
-              name="password"
-              id="password"
-            />
-          </div>
-          <div>
-            <input type="submit" value="Register" class="btn-register" />
-            <a href="/login">Log In</a>
-          </div>
-        </form>
-        <span style="color: red" id="regresult"></span>
-      </section>
+        </div>
+      </form>
+      <div id="regresult" class="mt-4 text-center text-sm text-red-600"></div>
     </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  </body>
+  </div>
+</body>
 </html>

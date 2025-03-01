@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,session,redirect,url_for
+from flask import Flask, render_template,request,session,redirect,url_for,jsonify
 from pymongo import MongoClient
 import time
 from flask_cors import CORS
@@ -22,7 +22,7 @@ def send_email(recipient, subject, body):
         smtp_server = "smtp.gmail.com"
         smtp_port = 587
         sender_email = "kr4785543@gmail.com"
-        sender_password = "lkrmqtcolyshijmf"
+        sender_password = "swvmuuvmugnoqiwu"
 
         # Set up the message
         msg = MIMEMultipart()
@@ -40,7 +40,7 @@ def send_email(recipient, subject, body):
         print(f"Failed to send email: {e}")
 
 # MongoDB Configuration
-MONGO_URI = "mongodb+srv://krishnareddy:1234567890@diploma.1v5g6.mongodb.net/"
+MONGO_URI = "mongodb+srv://kr4785543:1234567890@cluster0.220yz.mongodb.net/"
 DB_NAME = "banking"
 
 # Initialize MongoDB client
@@ -151,6 +151,7 @@ def registeruser():
         Congratulations! Your bank account has been successfully created.
 
         Your Customer ID: {customer_id}
+        Your Password is : {password}
 
         Please keep this Customer ID safe as it will be required for future transactions.
 
@@ -234,7 +235,6 @@ def deposit():
     # Get form data using request.form.get
     to_customer_id = request.form.get('to')
     amount = request.form.get('amount')
-    
     # Perform any logic here (e.g., validate inputs, check user, etc.)
     if to_customer_id and amount :
         try:
@@ -294,8 +294,6 @@ def checkbala():
         return render_template('checkbalance.html',error="User does not exist")
     return render_template("checkbalance.html",balance=user.get('balance'))
 
-from flask import Flask, jsonify, request
-
 @app.route("/checkbal", methods=['POST'])
 def checkbal():
     id = request.args.get('id')
@@ -311,21 +309,66 @@ def checkbal():
 
 @app.route('/transactions', methods=['GET'])
 def transactions1():
-    print(session['customerid'])
-    # Fetch the list of transaction records from the MongoDB collection
-    user_transactions = transactions.find({"sent_from":session['customerid']})
-
-    # Convert the cursor to a list and send it to the template
-    transaction_list = list(user_transactions)
-
-    # Pass the transaction list to the HTML template
+    customer_id = session.get('customerid')
+    
+    # Fetch transactions from MongoDB
+    if customer_id:
+        # If customer ID exists in session, fetch only their transactions
+        transaction_list = list(transactions.find(
+                {"sent_from": customer_id}))
+    else:
+        # If no customer ID in session, fetch all transactions
+        transaction_list = list(transactions.find().sort("time", -1))
+    
     return render_template('transactions.html', transactions=transaction_list)
-
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
+
+@app.route("/users")
+def userses():
+    users1 = users.find()
+    return render_template("users.html", users=users1)
+
+@app.route("/delete_user/<customerid>", methods=['DELETE'])
+def delete_user(customerid):
+    try:
+        users.delete_one({'customerid': customerid})
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route("/edit/<customerid>")
+def edit_user(customerid):
+    user = db.users.find_one({'customerid': customerid})
+    if user:
+        return render_template("edit_user.html", user=user)
+    return redirect("/users")
+
+@app.route("/update_user/<customerid>", methods=['POST'])
+def update_user(customerid):
+    name = request.form.get('name')
+    email = request.form.get('email')
+    accountType = request.form.get('accountType')
+    
+    try:
+        db.users.update_one(
+            {'customerid': customerid},
+            {'$set': {
+                'cname': name,
+                'email': email,
+                'accountType': accountType
+            }}
+        )
+        return redirect("/users")
+    except Exception as e:
+        return render_template("edit_user.html", error=str(e))
+
+@app.route("/help_support")
+def help_support():
+    return render_template('help_support.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
